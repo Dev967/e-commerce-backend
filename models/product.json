@@ -1,0 +1,39 @@
+{
+    "name": "Realme 2",
+    "category": [
+        "Smartphones",
+        "Electronics"
+    ],
+    "price": 9000,
+    "color": [
+        "Blue",
+        "Red",
+        "Black"
+    ],
+    "rating": 4.4,
+    "description": "",
+    "offers": [
+        "Cash on delivery available",
+        "10% flat discount",
+        "15% off for fakebank users",
+        "20% discount on EMI's"
+    ],
+    "reviews": [
+        {
+            "name": "John Doe",
+            "review": "Nice product",
+            "date": "13/1/2020",
+            "rating": 4
+        },
+        {
+            "name": "Jane Doe",
+            "review": "Cheap quality",
+            "date": "14/1/2020",
+            "rating": 2
+        }
+    ],
+    "images": [
+        "https://localhost:5000/images/5f0dbd75ad81e02d1848e2c7",
+        "https://localhost:5000/images/5f0ef5a9775f100dc7a12350"
+    ]
+}
