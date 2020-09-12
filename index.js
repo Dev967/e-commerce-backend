@@ -8,6 +8,7 @@ const server = express()
 init(server)
 
 //rest of require stack
+
 const session = require('./modules/session')
 const authenticator = require('./modules/authenticator').authenticator
 //routes
