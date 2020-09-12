@@ -11,12 +11,6 @@ let gfs = new GridFSBucket(client.db(process.env.DB_NAME), { bucketName: 'images
 //multer
 const upload = multer({ storage })
 
-//@route POST /images/add
-//@desc route to upload images
-Router.route('/add').post(checkSeller, upload.array("images", 4), (req, res) => {
-    res.json({ success: true, message: "files uploaded successfully" })
-})
-
 //@route GET /images/download/:name
 //@desc route to get images rendered to browser
 Router.route('/download/:name').get((req, res) => {
@@ -33,8 +27,16 @@ Router.route('/download/:name').get((req, res) => {
         .catch(err => res.json({ success: false, message: err }));
 })
 
+//Protected Routes
 
+//@PROTECTED
+//@route POST /images/add
+//@desc route to upload images
+Router.route('/add').post(checkSeller, upload.array("images", 4), (req, res) => {
+    res.json({ success: true, message: "files uploaded successfully" })
+})
 
+//@PROTECTED
 // @route POST /images/delete/:filename
 // @desc route to delete file
 Router.route('/delete/:filename').delete(checkSeller, (req, res) => {
