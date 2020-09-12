@@ -1,44 +1,20 @@
-const Router = require('express').Router();
-const crypto = require('crypto');
-const path = require('path');
-const GridFsStorage = require('multer-gridfs-storage');
-const mongo = require('mongodb');
-const multer = require('multer');
-const URI = require('../config').uri;
-const client = require('../index');
+const multer = require('multer')
+const Router = require('express').Router()
+const { checkSeller } = require('../modules/authHandler')
+const { storage } = require('../modules/image_storage_engine')
+const { GridFSBucket } = require('mongodb')
+const { client } = require('../modules/mongo_connection')
 
 //stream
-let gfs = new mongo.GridFSBucket(client.db('crazy_shopper'), { bucketName: 'images' });
-
-//storage engine
-const storage = GridFsStorage({
-    url: URI + "/crazy_shopper",
-    file: (req, file) => {
-        return new Promise((resolve, reject) => {
-            crypto.randomBytes(16, (err, buf) => {
-                if (err) {
-                    return reject(err);
-                }
-                const filename = buf.toString('hex') + path.extname(file.originalname);
-                const fileInfo = {
-                    filename: filename,
-                    bucketName: 'images'
-                };
-                resolve(fileInfo);
-            });
-        });
-    }
-});
+let gfs = new GridFSBucket(client.db(process.env.DB_NAME), { bucketName: 'images' })
 
 //multer
-const upload = multer({ storage });
-
-//CRUD
+const upload = multer({ storage })
 
 //@route POST /images/add
 //@desc route to upload images
-Router.route('/add').post(upload.array("images", 4), (req, res) => {
-    res.json({ success: true, message: "files uploaded successfully" });
+Router.route('/add').post(checkSeller, upload.array("images", 4), (req, res) => {
+    res.json({ success: true, message: "files uploaded successfully" })
 })
 
 //@route GET /images/download/:name
@@ -46,11 +22,11 @@ Router.route('/add').post(upload.array("images", 4), (req, res) => {
 Router.route('/download/:name').get((req, res) => {
     gfs.find({ "filename": `${req.params.name}.jpg` }).toArray()
         .then(result => {
-            if (!result) res.status(404).json({ success: false, message: "no files found !" });
+            if (!result) res.status(404).json({ success: false, message: "no files found !" })
             // else {
             gfs.openDownloadStreamByName(`${req.params.name}.jpg`).pipe(res)
                 .once('err', (err) => {
-                    return res.status(400).json({ success: false, message: err });
+                    return res.status(400).json({ success: false, message: err })
                 });
             // }
         })
@@ -61,7 +37,7 @@ Router.route('/download/:name').get((req, res) => {
 
 // @route POST /images/delete/:filename
 // @desc route to delete file
-Router.route('/delete/:filename').post((req, res) => {
+Router.route('/delete/:filename').delete(checkSeller, (req, res) => {
     console.log(`\n delete request --> ${req.params.filename}`);
     gfs.find({ "filename": `${req.params.filename}.jpg` }).toArray()
         .then(result => {
@@ -71,8 +47,6 @@ Router.route('/delete/:filename').post((req, res) => {
         .catch(err => res.json({ success: false, message: err }));
 });
 
-
-//@route GET /images/test
-//@desc route for testing purpose
-Router.route('/test').get((req, res) => res.send("Router Images working fine !!"))
+//TODO
+//update routes
 module.exports = Router;

@@ -1,28 +1,27 @@
-const mongo = require('mongodb');
-const express = require('express');
-const assert = require('assert');
-const config = require('./config');
+//first to do's
+require('dotenv').config()
+const { init } = require('./modules/mongo_connection')
 
-const PORT = config.port;
-const URI = config.uri;
+//initialization of server and connecting to MongoDB
+const express = require('express')
+const server = express()
+init(server)
 
-//Express Server
-const server = express();
+//rest of require stack
+const session = require('./modules/session')
+const authenticator = require('./modules/authenticator').authenticator
+//routes
+const Images = require('./routes/images')
+const Products = require('./routes/products')
+const User = require('./routes/user')
 
-
-//Mongodb Connection establishment
-const client = new mongo.MongoClient(URI, { useNewUrlParser: true, useUnifiedTopology: true });
-client.connect()
-    .then(result => {
-        server.listen(PORT, (err) => console.log(`Server is listening on PORT ${PORT}`))
-    })
-    .catch(err => console.log(err))
-
-module.exports = client;
+//middlewares
+server.use(express.json())
+server.use(express.urlencoded({ extended: true }))
+server.use(session)
+server.use(authenticator)
 
 //Routes
-const Images = require('./routes/images');
-const Products = require('./routes/products');
-
-server.use('/images', Images);
-server.use('/products', Products);
+server.use('/images', Images)
+server.use('/products', Products)
+server.use('/user', User)
