@@ -1,15 +1,16 @@
-const { client } = require('./mongo_connection')
+const {client} = require('./mongo_connection')
 const bcrypt = require('bcrypt')
 const isEmpty = require('./isEmpty')
 const { ObjectId } = require('mongodb')
 
 const users = client.db(process.env.DB_NAME).collection('users')
 
-
 //@MIDDLEWARE login
 //@DESC to authenticate user given login details
 //@USE Router.post('/login',checkNotAuth,login)
 const login = (req, res, next) => {
+    // const email = req.fields.email
+    // const password = req.fields.password
     const email = req.body.email
     const password = req.body.password
 

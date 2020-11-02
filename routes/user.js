@@ -3,7 +3,6 @@
 const { checkNotAuth, checkAuth } = require('../modules/authHandler')
 const { client } = require('../modules/mongo_connection')
 const { login, logout } = require('../modules/authenticator')
-const bcrypt = require('bcrypt')
 const Router = require('express').Router()
 const path = require('path')
 
@@ -30,42 +29,29 @@ Router.route('/login').post(
 //@desc to logout users
 Router.get('/logout', checkAuth, logout)
 
+
+
+const validator = require('../modules/user_validator')
+const exist = require('../modules/user_exist')
 //@route POST /user/register
 //@desc route to register user
 Router.route('/register').post(
     checkNotAuth,
-    (req, res) => {
-        users.findOne({ "email": req.body.email },
-            async (err, result) => {
-                if (err) {
-                    return console.log("error occured", err)
-                }
-                if (result) {
-                    return res.status(400)
-                        .json(
-                            {
-                                success: false,
-                                message: "user already exist"
-                            })
-                }
-                try {
-                    await users.insertOne({
-                        "email": req.body.email,
-                        "username": req.body.username,
-                        "password": await bcrypt.hash(req.body.password, 5),
-                        "gender": req.body.gender,
-                        "date": new Date(Date.now()),
-                        "address": req.body.address,
-                        "type": req.body.user_type
-                    })
-                    res.redirect(process.env.successRedirect)
-                } catch (error) {
-                    console.log("error inserting user", error)
-                    return res.json({ success: false, message: error })
-                }
-
-            })
+    exist,
+    validator,
+    async (req, res) => {
+        //upload process starts 
+        try {
+            //try insertion in db
+            await users.insertOne(req.newUser)
+            res.redirect(process.env.successRedirect)
+        } catch (error) {
+            //if insertion failed
+            console.log("error adding user", error)
+            return res.json({ success: false, message: error })
+        }
     }
 )
 
+//update and delete routes
 module.exports = Router;

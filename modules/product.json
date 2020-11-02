@@ -12,12 +12,6 @@
     ],
     "rating": 4.4,
     "description": "",
-    "offers": [
-        "Cash on delivery available",
-        "10% flat discount",
-        "15% off for fakebank users",
-        "20% discount on EMI's"
-    ],
     "reviews": [
         {
             "name": "John Doe",
@@ -32,6 +26,7 @@
             "rating": 2
         }
     ],
+    "seller": "",
     "images": [
         "https://localhost:5000/images/5f0dbd75ad81e02d1848e2c7",
         "https://localhost:5000/images/5f0ef5a9775f100dc7a12350"

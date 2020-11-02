@@ -4,21 +4,24 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "axios": "^0.20.0",
     "bcrypt": "^5.0.0",
     "connect-mongo": "^3.2.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
-    "jest": "^26.2.2",
     "mongodb": "^3.5.9",
     "multer": "^1.4.2",
     "multer-gridfs-storage": "^4.2.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.4"
+    "chai": "^4.2.0",
+    "mocha": "^8.2.0",
+    "nodemon": "^2.0.4",
+    "supertest": "^6.0.0"
   },
   "scripts": {
-    "test": "jest ./tests",
+    "test": "mocha ./tests/middlewares",
     "start": "node main",
     "run-dev": "nodemon main"
   }

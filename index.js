@@ -1,5 +1,5 @@
 //first to do's
-require('dotenv').config()
+// require('dotenv').config()
 const { init } = require('./modules/mongo_connection')
 
 //initialization of server and connecting to MongoDB
@@ -8,20 +8,19 @@ const server = express()
 init(server)
 
 //rest of require stack
-
 const session = require('./modules/session')
 const authenticator = require('./modules/authenticator').authenticator
-//routes
-const Images = require('./routes/images')
-const Products = require('./routes/products')
-const User = require('./routes/user')
 
 //middlewares
 server.use(express.json())
-server.use(express.urlencoded({ extended: true }))
+server.use(express.urlencoded({ extended: false }))
 server.use(session)
 server.use(authenticator)
 
+//routes
+const Images = require('./routes/images').Router
+const Products = require('./routes/products')
+const User = require('./routes/user')
 //Routes
 server.use('/images', Images)
 server.use('/products', Products)
