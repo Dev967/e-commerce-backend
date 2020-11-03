@@ -10,8 +10,10 @@ init(server)
 //rest of require stack
 const session = require('./modules/session')
 const authenticator = require('./modules/authenticator').authenticator
+const csrf = require('csurf')
 
 //middlewares
+server.use(csrf)
 server.use(express.json())
 server.use(express.urlencoded({ extended: false }))
 server.use(session)
